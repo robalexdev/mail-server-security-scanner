@@ -136,7 +136,6 @@ class ALookup(DnsLookup):
     def get_results(self):
         return self.results
 
-
 class MtaStsLookup(DnsLookup):
     def __init__(self, qname):
         super().__init__(f"_mta-sts.{qname}", "TXT", dns.rdatatype.TXT)
@@ -147,6 +146,18 @@ class MtaStsLookup(DnsLookup):
             if string.startswith(b"v=STSv1;"):
                 self.results.add(string)
                 self.save_record(string)
+
+    def get_results(self):
+        return self.results
+
+class MtaStsLookupCname(DnsLookup):
+    def __init__(self, qname):
+        super().__init__(f"_mta-sts.{qname}", "CNAME", dns.rdatatype.CNAME)
+        self.results = set([])
+
+    def _handle_answer(self, rdata):
+        self.results.add(rdata.to_text())
+        self.save_record(rdata.to_text())
 
     def get_results(self):
         return self.results
@@ -258,6 +269,11 @@ def scan(domains_list):
         print(f"Checking {domain}")
         mtasts_records = MtaStsLookup(domain).get_cache_or_fetch()
         if any([bool(r.value) for r in mtasts_records]):
+            fetch_mtasts_policy(domain)
+        mtasts_cname_records = MtaStsLookupCname(domain).get_cache_or_fetch()
+        if mtasts_cname_records:
+            for mtasts_cname_record in mtasts_cname_records:
+                MtaStsLookup(mtasts_cname_record).get_cache_or_fetch()
             fetch_mtasts_policy(domain)
         for mx in MxLookup(domain).get_cache_or_fetch():
             if not mx.value:
