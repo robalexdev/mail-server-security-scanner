@@ -22,8 +22,6 @@ TIMEOUT_SECONDS = 20
 url_re = re.compile("[._a-z0-9]+")
 
 dns_resolver = dns.resolver.Resolver()
-dns_resolver.nameservers = ['127.0.0.1']
-dns_resolver.port = 8053
 dns_resolver.search = []
 # Ask for DNSSEC validation
 dns_resolver.edns = 0
@@ -403,7 +401,11 @@ def report():
 
 @click.command()
 @click.argument("domains_list", required=False, type=click.File('r'))
-def main(domains_list):
+@click.argument("resolvers", required=False, type=str, default="1.1.1.1")
+@click.argument("resolver_port", required=False, type=int, default=53)
+def main(domains_list, resolvers, resolver_port):
+    dns_resolver.nameservers = resolvers.split(",")
+    dns_resolver.port = resolver_port
     if domains_list:
         scan(domains_list)
     else:
