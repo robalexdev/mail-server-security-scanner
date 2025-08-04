@@ -7,6 +7,8 @@ COPY . .
 FROM app AS test
 RUN python3 manage.py makemigrations db
 RUN python3 manage.py migrate
+RUN echo "robalexdev.com" > list
+RUN python analyze.py list
 RUN python3 analyze.py
 RUN touch success
 
