@@ -12,7 +12,8 @@ pipeline {
         script {
           def customImage = docker.build("mail-server-security-scanner:latest")
           sh 'echo "robalexdev.com" > list'
-          customImage.inside("-v ${env.WORKSPACE}/results.db:/app/results.db") {
+          sh 'mkdir -p results'
+          customImage.inside {
             sh 'python manage.py makemigrations db'
             sh 'python manage.py migrate'
             sh 'python analyze.py list'
