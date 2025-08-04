@@ -18,7 +18,7 @@ pipeline {
                         target: "tranco-list-cacher"
 
           // Extract just the top N domains
-          sh 'cat tranco-list-cacher/output/tranco.csv | awk -F"," \'{ print $2 }\' | head -n 10 > list.txt'
+          sh 'cat tranco-list-cacher/output/tranco.csv | awk -F"," \'{ print $2 }\' | head -n 1000 > list.txt'
 
           customImage.inside {
             sh 'python manage.py makemigrations db'
@@ -26,7 +26,8 @@ pipeline {
             sh 'python analyze.py list.txt'
             sh 'python analyze.py'
           }
-          sh 'ls -Rl'
+          sh 'ls -lh results/'
+          archiveArtifacts artifacts: 'results/results.db'
         }
       }
     }
