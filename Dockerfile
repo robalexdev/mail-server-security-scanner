@@ -5,7 +5,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 FROM app AS test
-RUN python3 manage.py makemigrations
+RUN python3 manage.py makemigrations db
 RUN python3 manage.py migrate
 RUN python3 analyze.py
 RUN touch success
