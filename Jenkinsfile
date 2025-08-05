@@ -19,7 +19,7 @@ pipeline {
           sh 'cat tranco-list-cacher/output/tranco.csv | awk -F"," \'{ print $2 }\' | head -n 100 > list.txt'
 
           def pdnsImage = docker.image("powerdns/pdns-recursor-52:latest")
-          def appImage = docker.build()
+          def appImage = docker.build("app:latest")
           pdnsImage.withRun(
               ' -p 1053:53' +
               ' -p 1053:53/udp'
