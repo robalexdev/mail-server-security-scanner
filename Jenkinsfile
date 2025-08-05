@@ -28,7 +28,9 @@ pipeline {
   post {
     always {
       steps {
-        sh 'docker compose down -t 0'
+        script {
+          sh 'docker container rm app | true'
+        }
         cleanWs()
       }
     }
