@@ -26,7 +26,7 @@ pipeline {
               -v ./list.txt:/app/list.txt:ro
               --env MSSS_RESOLVERS=172.17.0.1
               --env MSSS_RESOLVER_PORT=1053
-              """.stripIndent()
+              """
             ) {
               sh './run.sh'
             }
@@ -41,9 +41,7 @@ pipeline {
 
   post {
     always {
-      steps {
-        cleanWs()
-      }
+      cleanWs()
     }
   }
 }
