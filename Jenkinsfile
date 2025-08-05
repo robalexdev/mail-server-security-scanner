@@ -20,17 +20,18 @@ pipeline {
 
           def pdnsImage = docker.image("powerdns/pdns-recursor-52:latest")
           def appImage = docker.build()
-          pdnsImage.withRun("-p 1053:53 -p 1053:53/udp") { c ->
-            appImage.inside(
-              """
-              -v ./results/:/app/results/
-              -v ./list.txt:/app/list.txt:ro
-              --env MSSS_RESOLVERS=172.17.0.1
-              --env MSSS_RESOLVER_PORT=1053
-              """
-            ) {
-              sh './run.sh'
-            }
+          pdnsImage.withRun(
+              ' -p 1053:53' +
+              ' -p 1053:53/udp'
+            ) { c ->
+              appImage.inside(
+                  ' -v ./results/:/app/results/' +
+                  ' -v ./list.txt:/app/list.txt:ro' +
+                  ' --env MSSS_RESOLVERS=172.17.0.1' +
+                  ' --env MSSS_RESOLVER_PORT=1053'
+                ) {
+                  sh './run.sh'
+              }
           }
 
           // Save database for additional analysis
