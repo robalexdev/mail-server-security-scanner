@@ -21,7 +21,7 @@ pipeline {
           def pdnsImage = docker.image("powerdns/pdns-recursor-52:latest")
           def appImage = docker.build("app:latest")
           pdnsImage.withRun(
-              " -p 1053:53: +
+              " -p 1053:53" +
               " -p 1053:53/udp"
             ) { c ->
               appImage.inside(
