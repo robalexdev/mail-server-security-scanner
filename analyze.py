@@ -271,7 +271,7 @@ def scan(domains_list):
         mtasts_cname_records = MtaStsLookupCname(domain).get_cache_or_fetch()
         if mtasts_cname_records:
             for mtasts_cname_record in mtasts_cname_records:
-                MtaStsLookup(mtasts_cname_record).get_cache_or_fetch()
+                MtaStsLookup(mtasts_cname_record.qname).get_cache_or_fetch()
             fetch_mtasts_policy(domain)
         for mx in MxLookup(domain).get_cache_or_fetch():
             if not mx.value:
@@ -401,11 +401,18 @@ def report():
 
 @click.command()
 @click.argument("domains_list", required=False, type=click.File('r'))
-@click.argument("resolvers", required=False, type=str, default="1.1.1.1")
-@click.argument("resolver_port", required=False, type=int, default=53)
+@click.argument("resolvers", required=False, type=str, default="")
+@click.argument("resolver_port", required=False, type=int, default=-1)
 def main(domains_list, resolvers, resolver_port):
+    # Configure DNS via cmdline, envvar, or default
+    if not resolvers:
+        resolvers = os.getenv('MSSS_RESOLVERS', '1.1.1.1')
+    if resolver_port < 0:
+        resolver_port = int(os.getenv('MSSS_RESOLVER_PORT', '53'))
+
     dns_resolver.nameservers = resolvers.split(",")
     dns_resolver.port = resolver_port
+
     if domains_list:
         scan(domains_list)
     else:

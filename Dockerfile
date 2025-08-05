@@ -8,11 +8,12 @@ FROM app AS test
 RUN mkdir -p results
 RUN python3 manage.py makemigrations db
 RUN python3 manage.py migrate
-RUN echo "robalexdev.com" > list
-RUN python analyze.py list
+RUN echo "robalexdev.com" > list.txt
+RUN python analyze.py list.txt
 RUN python3 analyze.py
 RUN touch success
 
 FROM app
 COPY --from=test /app/success .
-ENTRYPOINT [ "/bin/bash", "-l", "-c" ]
+CMD [ "tail", "-f", "/dev/null" ]
+
