@@ -16,7 +16,7 @@ pipeline {
                         target: "tranco-list-cacher"
 
           // Extract just the top N domains
-          sh 'cat tranco-list-cacher/output/tranco.csv | awk -F"," \'{ print $2 }\' | head -n 1000000 > list.txt'
+          sh 'cat tranco-list-cacher/output/tranco.csv | awk -F"," \'{ print $2 }\' | head -n 100000 > list.txt'
 
           def pdnsImage = docker.image("powerdns/pdns-recursor-52:latest")
           def appImage = docker.build("app:latest")
