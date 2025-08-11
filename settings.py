@@ -8,6 +8,6 @@ INSTALLED_APPS=["db"]
 DATABASES={
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "results.db",
+        "NAME": BASE_DIR / "results" / "results.db",
     },
 }

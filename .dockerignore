@@ -1,0 +1,7 @@
+*.md
+Dockerfile
+Jenkinsfile
+__pycache__/
+compose.yml
+results/
+venv/
