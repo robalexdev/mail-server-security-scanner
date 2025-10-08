@@ -12,14 +12,16 @@ pipeline {
         script {
           sh 'mkdir -p results'
 
+          def pdnsImage = docker.image("powerdns/pdns-recursor-52:latest")
+          def appImage = docker.build("app:latest")
+
           copyArtifacts projectName: 'Measurements/tranco-list-cacher',
                         target: "tranco-list-cacher"
 
           // Extract just the top N domains
           sh 'cat tranco-list-cacher/output/tranco.csv | awk -F"," \'{ print $2 }\' | head -n 100000 > list.txt'
+          sh 'wc -l list.txt; pwd; echo "${WORKSPACE}"'
 
-          def pdnsImage = docker.image("powerdns/pdns-recursor-52:latest")
-          def appImage = docker.build("app:latest")
           pdnsImage.withRun(
               " -p 1053:53" +
               " -p 1053:53/udp"
