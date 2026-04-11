@@ -1,3 +1,6 @@
+> [!CAUTION]
+> https://gitlab.com/robalexdev/mail-server-security-scanner
+
 # Mail Server Security Scanner
 
 Scan a list of domains to check for DNSSEC, DANE, and MTA-STS support 
